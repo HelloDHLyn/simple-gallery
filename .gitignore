@@ -17,3 +17,6 @@ htmlcov
 .coverage
 .coverage.*
 *,cover
+
+config/*
+!config/*.example

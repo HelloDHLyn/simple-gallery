@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//cdn.jsdelivr.net/nanumsquare/1.0/nanumsquare.css" rel="stylesheet" type="text/css">
+    <style>
+        body {
+            background-color: #fafafa;
+            margin: 0;
+        }
+
+        .group {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem 0;
+            background-color: #ffffff;
+            border-top: 1px solid #f0f0f0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .group > h3 {
+            margin: 1rem 0.2rem;
+            font-family: 'NanumSquare', sans-serif;
+        }
+
+        .group > .image {
+            float: left;
+            width: 33%;
+            padding-bottom: 0.50%;
+        }
+
+        .group > .image:nth-of-type(3n + 1) {
+            padding-right: 0.50%;
+        }
+
+        .group > .image:nth-of-type(3n + 2) {
+            padding-right: 0.50%;
+        }
+    </style>
+    <title>Gallery Main</title>
+</head>
+<body>
+    {% for group in context.groups %}
+        <div class="group">
+        <h3>{{ group.name }}</h3>
+        {% for url in group.urls %}
+        <img class="image" src="{{ url }}">
+        {% endfor %}
+        </div>
+    {% endfor %}
+</body>
+</html>
