@@ -11,6 +11,7 @@
         }
 
         .group {
+            display: inline-block;
             margin-bottom: 0.5rem;
             padding: 0.5rem 0;
             background-color: #ffffff;
@@ -19,8 +20,13 @@
         }
 
         .group > h3 {
-            margin: 1rem 0.2rem;
+            margin: 0.7rem 0 0 0.7rem;
             font-family: 'NanumSquare', sans-serif;
+        }
+
+        .group > p {
+            margin: 0.2rem 0 0.7rem 0.7rem;
+            font-size: small;
         }
 
         .group > .image {
@@ -41,12 +47,13 @@
 </head>
 <body>
     {% for group in context.groups %}
-        <div class="group">
+    <div class="group">
         <h3>{{ group.name }}</h3>
-        {% for url in group.urls %}
-        <img class="image" src="{{ url }}">
+        <p>{{ group.prefix }}</p>
+        {% for photo in group.photos %}
+        <img class="image" src="{{ photo.thumbnail }}">
         {% endfor %}
-        </div>
+    </div>
     {% endfor %}
 </body>
 </html>
