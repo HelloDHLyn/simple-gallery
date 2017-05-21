@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="//cdn.jsdelivr.net/nanumsquare/1.0/nanumsquare.css" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/nanumsquare/1.0/nanumsquare.css" rel="stylesheet" type="text/css">
     <style>
         body {
             background-color: #fafafa;
@@ -29,31 +29,31 @@
             font-size: small;
         }
 
-        .group > .image {
+        .group .image {
             float: left;
             width: 33%;
             padding-bottom: 0.50%;
         }
 
-        .group > .image:nth-of-type(3n + 1) {
+        .group > a:nth-of-type(3n + 1) > .image {
             padding-right: 0.50%;
         }
 
-        .group > .image:nth-of-type(3n + 2) {
+        .group > a:nth-of-type(3n + 2) > .image {
             padding-right: 0.50%;
         }
     </style>
     <title>Gallery Main</title>
 </head>
 <body>
-    {% for group in context.groups %}
+{% for group in context.groups %}
     <div class="group">
         <h3>{{ group.name }}</h3>
         <p>{{ group.prefix }}</p>
         {% for photo in group.photos %}
-        <img class="image" src="{{ photo.thumbnail }}">
+        <a href="{{ photo.url }}"><img class="image" src="{{ photo.thumbnail }}"></a>
         {% endfor %}
     </div>
-    {% endfor %}
+{% endfor %}
 </body>
 </html>

@@ -1,7 +1,10 @@
 import atexit
+import os
+import uuid
 
 import psycopg2
-from flask import Flask, render_template
+import requests
+from flask import Flask, redirect, render_template, session, url_for, request, json
 
 from config.db import *
 
@@ -12,12 +15,31 @@ cursor = conn.cursor()
 
 @app.route('/')
 def welcome():
+    if 'session_id' not in session:
+        return redirect(url_for('login'))
+    else:
+        return redirect(url_for('main'))
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
     """
     로그인 화면.
-    :return:
+    :return: 
     """
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method == 'POST':
+        password = request.form['password']
 
-    return 'Hello, flask!'
+        r = requests.post('https://api.lynlab.co.kr/v1/auth', json={"name": "lynlab_gallery", "passcode": password})
+        response = json.loads(r.text)
+
+        if response['result']:
+            session['session_id'] = uuid.uuid4()
+            return redirect(url_for('main'))
+        else:
+            return redirect(url_for('login'))
 
 
 @app.route('/main')
@@ -26,6 +48,9 @@ def main():
     메인 화면.
     :return:
     """
+    if 'session_id' not in session:
+        return redirect(url_for('login'))
+
     # 사진 그룹을 불러온다.
     cursor.execute('SELECT * FROM gallery_photo_group ORDER BY \"order\"')
 
@@ -38,13 +63,12 @@ def main():
 
         photos = []
         for photo in filter(lambda p: p.get('Size') > 0, response.get('Contents')):
-            if photo.get('Size') == 0:
-                continue
-
             key = photo.get('Key')
+            thumbnail = f"https://s3.ap-northeast-2.amazonaws.com/{bucket}/{key}"
+
             photos.append({
-                'thumbnail': f"https://s3.ap-northeast-2.amazonaws.com/{bucket}/{key}",
-                'url': f""
+                'thumbnail': thumbnail,
+                'url': thumbnail.replace('/thumbnails', '')
             })
 
         groups.append({
@@ -67,4 +91,5 @@ def bye():
 
 
 if __name__ == '__main__':
+    app.secret_key = os.environ['GALLERY_SECRET_KEY']
     app.run(host='0.0.0.0')
